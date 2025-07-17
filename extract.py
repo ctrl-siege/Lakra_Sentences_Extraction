@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 def getTranscript(url): #FOR TED TALK
 
-    resp = requests.get(url)
+    resp = requests.get(url+"/transcript")
     resp.raise_for_status()
     match = re.search(r'"transcript":"(.*?)","', resp.text)
 
@@ -56,8 +56,6 @@ def findAllArticles(url):
                 art.write(str({"title": title if title else link.text.strip(), "url": full_url})+"\n")
         i+=1
         
-
-
 def prettifyWeb(url):
 
     resp = requests.get(url)
@@ -65,9 +63,7 @@ def prettifyWeb(url):
     soup = BeautifulSoup(resp.text, "html.parser")
     print(soup.prettify())
 
-url = "https://en.wikipedia.org/w/index.php?title=Special:AllPages&from="
-url2 = url+"?language=tl"
+url = "https://www.ted.com/talks/hawa_abdi_deqo_mohamed_mother_and_daughter_doctor_heroes"
 
-
-findAllArticles(url)
+getTranscript(url)
 

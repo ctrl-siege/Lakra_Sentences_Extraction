@@ -5,7 +5,8 @@ import sys
 import re
 
 ENDPOINT = "http://localhost:11434/api/generate"
-MODEL_NAME = "qwen3:14b"
+MODEL_NAME = "gemma3:12b"
+isQwen = False
 
 def query_model(prompt=""):
     
@@ -15,6 +16,10 @@ def query_model(prompt=""):
         "stream": True,
         "incremental_output": True
     }
+
+    if MODEL_NAME == "qwen3:14b":
+        global isQwen 
+        isQwen = True
     
     headers = {
         "X-DashScope-SSE": "enable", 
@@ -45,8 +50,8 @@ def translate(file, SRC, TGT):
     
     cout = 1
     lines = []
-
-    wthink = open("wfile.txt", "w", encoding="utf-8")
+    global isQwen
+    global TRANSLATIONS
 
     for line in file:
 
@@ -67,18 +72,32 @@ Sentences:
 Format:
 
 SRC: [source_text]
-TGT: 
-""")
+TGT:""")
            
-            wothinkres = re.sub(r"<think>.*?</think>\s*", "", response, flags=re.DOTALL) 
-            wthink.write(f"{wothinkres}\n\n")
+            wothinkres = response
+
+            if isQwen:
+                wothinkres = re.sub(r"<think>.*?</think>\s*", "", response, flags=re.DOTALL) 
+
+            TRANSLATIONS.write(f"{wothinkres}\n\n")
             lines.clear()
             cout = 1
-        
-        
-FILE_PATH = r"Experiment_1\Complex_Compound_Exclamatory\EN.txt"
-FILE = open(FILE_PATH, 'r', encoding="utf-8")
-SRC = "ENGLISH"
-TGT = "ILOCANO"
 
-translate(FILE, SRC, TGT)
+    file.close()
+        
+        
+        
+FILE_PATH = r"translated.txt"
+TRANSLATIONS =  open("translations.txt", "w", encoding="utf-8")
+SRC = "ENGLISH"
+
+LANG  = ["CEBUANO", "ILOCANO", "TAGALOG"]
+
+if SRC in LANG:
+    LANG.remove[SRC]
+
+for TGT in LANG:
+    print(TGT)
+
+    FILE = open(FILE_PATH, 'r', encoding="utf-8")
+    translate(FILE, SRC, TGT)

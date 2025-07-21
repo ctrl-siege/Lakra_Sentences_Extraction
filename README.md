@@ -29,11 +29,11 @@ Pull a model from Ollama
 
 `ollama pull <model_name>`
 
-| Model       | Parameters | Developer  | Context Window | PHLs Supported |
-| ------------| ---------- | ---------- | -------------- | -------------- | 
-| Qwen 3      | 14B        | Alibaba    | 128K tokens    | CEB, ILO, TGL  |
-| Gemma 3     | 12B        | Google     | 128K tokens    | CEB, ILO, TGL  |
-| Sailor 2    | 20B        | Sea AI Lab | 128K tokens    | CEB, ILO, TGL  |
+| Model       | Parameters | Developer  | Context Window | 
+| ------------| ---------- | ---------- | -------------- | 
+| Qwen 3      | 14B        | Alibaba    | 128K tokens    | 
+| Gemma 3     | 12B        | Google     | 128K tokens    | 
+| Sailor 2    | 20B        | Sea AI Lab | 128K tokens    |
 
 Ensure the model has been pulled
 
@@ -42,3 +42,4 @@ Ensure the model has been pulled
 Start running the model
 
 `ollama run <model_name>`
+

@@ -2,14 +2,42 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-def getTranscript(url): #FOR TED TALK
+def getTranscript(): #FOR TED TALK
 
-    resp = requests.get(url+"/transcript")
-    resp.raise_for_status()
-    match = re.search(r'"transcript":"(.*?)","', resp.text)
+    URLS = []
 
-    if match:
-        print(match.group(1))
+    for URL in URLS:
+        RESPONSE = requests.get(URL+"/transcript")
+        RESPONSE.raise_for_status()
+
+        FILE = open(r"CORPUS/TedTalkTranscripts.txt", "a", encoding="utf-8")
+        TITLE = re.search(r'"name":"(.*?)","', RESPONSE.text)
+        TRANSCRIPT = re.search(r'"transcript":"(.*?)","', RESPONSE.text)
+
+        if TITLE and TRANSCRIPT:
+            FILE.write(TITLE.group(1)+"\n")
+            FILE.write(TRANSCRIPT.group(1)+"\n\n")
+
+def filterSentencesByToken():
+
+    CORPUS_NAME = "EMEA"
+    PATH = "C:/Users/NICK SENTERO/Downloads/en (1).txt/en (1).txt"
+    FILE = open(PATH, "r", encoding="utf-8")
+    CORPUS_FILE = open(f"CORPUS/{CORPUS_NAME}.txt", "w", encoding="utf-8")
+
+    CHARACTERS = ["(", ")", "[", "]", ".", ",","?", "!", ";", ":"]
+
+    for LINE in FILE:
+
+        SENTENCE = LINE
+
+        for CHARACTER in CHARACTERS:
+            SENTENCE.replace(CHARACTER, " "+CHARACTER+" ")
+
+        TOKENS = SENTENCE.split(" ")
+
+        if len(TOKENS) <= 50:
+            CORPUS_FILE.write(LINE)
 
 def findAllArticles(url):
 
@@ -22,19 +50,19 @@ def findAllArticles(url):
 
     while True: 
         
-        resp = ""
+        RESPONSE = ""
         print(f"Extracting on Page {i}")
 
         if i == 3:
             break
 
         if i > 1: 
-            resp = requests.get(url+str(title))
+            RESPONSE = requests.get(url+str(title))
         else:
-            resp = requests.get(url+"%21")
+            RESPONSE = requests.get(url+"%21")
 
-        resp.raise_for_status()
-        soup = BeautifulSoup(resp.text, "html.parser")
+        RESPONSE.raise_for_status()
+        soup = BeautifulSoup(RESPONSE.text, "html.parser")
         content_div = soup.find('div', class_='mw-body-content') 
 
         if not content_div:
@@ -58,12 +86,12 @@ def findAllArticles(url):
         
 def prettifyWeb(url):
 
-    resp = requests.get(url)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
+    RESPONSE = requests.get(url)
+    RESPONSE.raise_for_status()
+    soup = BeautifulSoup(RESPONSE.text, "html.parser")
     print(soup.prettify())
 
-url = "https://www.ted.com/talks/hawa_abdi_deqo_mohamed_mother_and_daughter_doctor_heroes"
+URL = ""
 
-getTranscript(url)
+getTranscript()
 
